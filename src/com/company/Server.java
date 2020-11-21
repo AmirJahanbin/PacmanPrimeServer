@@ -34,6 +34,7 @@ public class Server extends Thread {
 
     public void sendMessageToAllClients (String message) {
         for(PrintWriter output : outputList) {
+            //System.out.println(message);
             output.println("Salam to all :), this is message: " + message);
         }
     }
