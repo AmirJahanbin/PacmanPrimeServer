@@ -1,20 +1,21 @@
 package com.company.hossein;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class ServerConnection  implements Runnable{
 
     private Socket server;
-    private BufferedReader in;
+    //private BufferedReader in;
+
+    private DataInputStream dis;
 
     public ServerConnection(Socket s) throws IOException
     {
         server = s;
-        in = new BufferedReader(new InputStreamReader(server.getInputStream()));
+        //in = new BufferedReader(new InputStreamReader(server.getInputStream()));
+
+        dis=new DataInputStream(s.getInputStream());
     }
 
     @Override
@@ -22,24 +23,36 @@ public class ServerConnection  implements Runnable{
 
         try {
             while (true) {
-                String serverResponse = in.readLine();
+                byte[] data = new byte[1000];
+                int count = dis.read(data);
+
+                for (int i = 0 ;i <count ; i++)
+                {
+                    System.out.print(unsignedToBytes(data[i]) + " - ");
+                }
+                System.out.println(" ");
+                /*String serverResponse = in.readLine();
                 if (serverResponse == null)
                 {
                     System.out.println("here");
                     break;
                 }
-                System.out.println("Server says: " + serverResponse);
+                System.out.println("Server says: " + serverResponse);*/
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                in.close();
+                dis.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
+    }
+
+    private  int unsignedToBytes(byte b) {
+        return b & 0xFF;
     }
 
 }

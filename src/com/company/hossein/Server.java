@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-    private static final int PORT = 5000;
+    private static final int PORT = 9000;
     private static InetAddress SERVER_IP ;
 
     private static ArrayList<ClientHandler> clients = new ArrayList<>();

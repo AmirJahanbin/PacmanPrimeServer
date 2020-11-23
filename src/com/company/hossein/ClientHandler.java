@@ -2,10 +2,7 @@ package com.company.hossein;
 
 import com.company.Client;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -16,19 +13,43 @@ public class ClientHandler implements Runnable{
     private PrintWriter out;
     private ArrayList<ClientHandler> clients;
 
+    DataInputStream dis;
+    DataOutputStream dout;
+
+    byte[] request = new byte[1000];
+
+    byte[] response = new byte[256];
+
     public  ClientHandler(Socket clientSocket , ArrayList<ClientHandler> clients) throws IOException
     {
         this.client = clientSocket;
         this.clients = clients;
-        in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        out = new PrintWriter(clientSocket.getOutputStream() , true);
+        //in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        //out = new PrintWriter(clientSocket.getOutputStream() , true);
+
+        dis=new DataInputStream(client.getInputStream());
+        dout=new DataOutputStream(client.getOutputStream());
+
+        for(int i = 0 ; i < 1000 ; i++)
+            request[i] = 3;
+
+        for(int i = 0 ; i < 256 ; i++)
+            request[i] = 4;
     }
 
     @Override
     public void run() {
         try {
             while (true) {
-                String request = in.readLine();
+                int count = dis.read(request);
+
+                System.out.println("count = " + count);
+                for (int i = 0 ; i < count ; i++)
+                {
+                    System.out.println(request[i]);
+                }
+                //dout.write(response, 0, response.length);
+                /*String request = in.readLine();
                 System.out.println(request);
                 if (request.contains("name")) {
                     out.println(getRandomName());
@@ -40,7 +61,7 @@ public class ClientHandler implements Runnable{
                 } else {
                     out.println("Type 'tell me a name' to get a random name");
 
-                }
+                }*/
             }
         }
         catch (IOException e) {
